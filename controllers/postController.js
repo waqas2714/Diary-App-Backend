@@ -3,8 +3,9 @@ const Post = require('../models/Post');
 
 //Get All Posts
 const getPosts = async (req,res)=>{
+    const user_id = req.user._id;
     try {
-        const posts = await Post.find().sort("-createdAt");
+        const posts = await Post.find({user_id}).sort("-createdAt");
         if (!posts) {
             res.status(404).json({error: "Post not found."});
         }
@@ -17,18 +18,20 @@ const getPosts = async (req,res)=>{
 //Create Post
 const createPost = async (req,res)=>{
    try {
-    const {date, title, content} = req.body;
+       const {date, title, content} = req.body;
+       const user_id = req.user._id;
+       console.log(user_id);
     const post = await Post.create({
         date,
         title,
-        content
+        content,
+        user_id
     })
     res.status(200).json(post);
    } catch (err) {
         res.status(400).json({error : err.message})
    }
-    
-}
+} 
 
 //Get Post
 const getPost = async (req,res)=>{
